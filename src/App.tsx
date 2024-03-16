@@ -7,6 +7,8 @@ import Sidebar from './components/Sidebar';
 import Profile from './pages/Profile';
 import Applications from './pages/Applications';
 import Messages from './pages/Messages';
+import Auth from "./pages/Auth";
+import LandingPage from "./pages/LandingPage";
 
 
 const Navigate = () => {
@@ -16,7 +18,7 @@ const Navigate = () => {
   return(
     <div>
       {isAuthenticated &&
-        <div className="flex flex-row my-2">
+        <div className="flex flex-row py-2">
           <div>
             <Sidebar/>
           </div>
@@ -27,6 +29,13 @@ const Navigate = () => {
           <Route path='/messages' element={<Messages/>}/>
         </Routes>
         </div>
+      }
+      {
+        !isAuthenticated &&
+            <Routes>
+              <Route path="/page" element={<LandingPage/>} />
+              <Route path="/auth" element={<Auth/>}/>
+            </Routes>
       }
     </div>
   )
