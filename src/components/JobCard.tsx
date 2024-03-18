@@ -42,7 +42,9 @@ const JobApplicationForm = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [experiences, setExperiences] = useState([{ company: '', role: '', description: '' }]);
     const [education, setEducation] = useState([{ institute_name: '', marks: '', year: '', work_done: '' }]);
-
+    const [currentCTC, setCurrentCTC] = useState('');
+    const [expectedCTC, setExpectedCTC] = useState('');
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Email:', email);
@@ -55,6 +57,7 @@ const JobApplicationForm = () => {
         console.log('Selected File:', selectedFile);
         console.log('Experiences:', experiences);
         console.log('Education:', education);
+        console.log(`Current CTC: ${currentCTC}, Expected CTC: ${expectedCTC}`);
         // handle form submission here
     };
 
@@ -64,7 +67,12 @@ const JobApplicationForm = () => {
     const handleLocationChange = (e) => setLocation(e.target.value);
     const handleYearsOfExperienceChange = (e) => setYearsOfExperience(e.target.value);
     const handleBioChange = (e) => setBio(e.target.value);
-
+    const handleCurrentCTCChange = (e) => {
+      setCurrentCTC(e.target.value);
+    };
+    const handleExpectedCTCChange = (e) => {
+      setExpectedCTC(e.target.value);
+    };
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -93,9 +101,6 @@ const JobApplicationForm = () => {
         };
   
   
-    // const onSubmit = (data) => {
-    //   console.log(data);
-    // };
 
     return (
         <div className='px-8  overflow-auto custom-scrollbar h-[60vh]'>
@@ -140,6 +145,20 @@ const JobApplicationForm = () => {
                     onChange={setGender} 
                     />
                 </div>
+            </div>
+            <div className='flex flex-row gap-24 items-center'>
+              <div> 
+                <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
+                  Current CTC
+                </h4>
+                <Input placeholder='Enter your current CTC' className='w-80' value={currentCTC} onChange={handleCurrentCTCChange}/>
+              </div>
+              <div> 
+                <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
+                  Expected CTC
+                </h4>
+                <Input placeholder='Enter your expected CTC' className='w-80' value={expectedCTC} onChange={handleExpectedCTCChange}/>
+              </div>
             </div>
             <div>
                 <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
