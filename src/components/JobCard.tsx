@@ -254,7 +254,6 @@ const JobCard: React.FC<JobCardProps> = ({ job }) => {
              <div>
                 <JobApplicationForm />
              </div>
-
           </DrawerContent>
         </Drawer>  
       </div>
