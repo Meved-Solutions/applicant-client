@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 
 
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Sidebar from './components/Sidebar';
 import Profile from './pages/Profile';
 import Applications from './pages/Applications';
 import Messages from './pages/Messages';
+import OnBoarding from "./pages/Onboarding";
 import Auth from "./pages/Auth";
-import LandingPage from "./pages/LandingPage";
 
 
 const Navigate = () => {
@@ -33,7 +33,7 @@ const Navigate = () => {
       {
         !isAuthenticated &&
             <Routes>
-              <Route path="/page" element={<LandingPage/>} />
+              <Route path="/onboarding" element={<OnBoarding/>} />
               <Route path="/auth" element={<Auth/>}/>
             </Routes>
       }
