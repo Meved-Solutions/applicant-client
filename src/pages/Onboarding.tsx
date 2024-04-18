@@ -37,7 +37,8 @@ const OnBoarding = () => {
   const [domain , setDomain] = useState('');
   const [education, setEducation] = useState([{ institute_name: '', marks: '', year: '', work_done: '' }]);
   const [experience, setExperience] = useState([{ company: '', timePeriod : '', role: '', description: '' }]);
-
+  const [linkedIn,setLinkedIn] = useState('');
+  const [portfolio,setPortfolio] = useState('');
   
   const handleEducationChange = (index, field, value) => {
     const newEducation = [...education];
@@ -151,7 +152,7 @@ const OnBoarding = () => {
           </div>
           <div className="px-8 mt-4 gap-4">
                 <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
-                    Org Location
+                    Location
                 </h4>
                 <Input  
                     type="text" 
@@ -271,6 +272,18 @@ const OnBoarding = () => {
               </div>
             ))}
             <Button className="ml-8" onClick={addExperience}>Add Experience</Button>
+          </div>
+          <div className="px-8 mt-6">
+                <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                  LinkedInProfile
+                </h4>
+              <Input  type="text" value={linkedIn} onChange={(e)=>{setLinkedIn(e.target.value)}} placeholder="Enter Your Expected CTC" className="mt-2"/>
+          </div>
+          <div className="px-8 mt-6">
+                <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                  Other Links
+                </h4>
+              <Input  type="text" value={portfolio} onChange={(e)=>{setPortfolio(e.target.value)}} placeholder="Enter Your Expected CTC" className="mt-2"/>
           </div>
             <Button className="w-full px-8 mt-2 flex flex-row justify-center" onClick={handleSubmit}>Submit</Button>
           </div>

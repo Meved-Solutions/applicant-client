@@ -1,10 +1,11 @@
-import { IoHomeOutline, IoPersonOutline, IoAppsOutline, IoMailOutline } from 'react-icons/io5';
+import { IoHomeOutline, IoLogOutOutline , IoPersonOutline, IoAppsOutline, IoMailOutline } from 'react-icons/io5';
 
 const navItems = [
   { name: 'Home', icon: IoHomeOutline, path: '/' },
   { name: 'Applications', icon: IoAppsOutline, path: '/applications' },
   { name: 'Messages', icon: IoMailOutline, path: '/messages' },
   { name: 'Profile', icon: IoPersonOutline, path: '/profile' },
+  { name: 'LogOut', icon: IoLogOutOutline , path : '/logout' },
 ];
 
 const Sidebar = () => {
