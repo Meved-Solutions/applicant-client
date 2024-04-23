@@ -10,11 +10,15 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
-
+import axios from "axios"
+import { useSetRecoilState } from "recoil";
+import { Authenticated, User } from "@/atom";
 
 const OnBoarding = () => {
 
   const navigate = useNavigate();
+  const setAuthenticated = useSetRecoilState(Authenticated);
+  const setUser = useSetRecoilState(User);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -35,10 +39,12 @@ const OnBoarding = () => {
   const [noticePeriod,setNoticePeriod] = useState('');
   const [quota,setOuata] = useState('');
   const [domain , setDomain] = useState('');
-  const [education, setEducation] = useState([{ institute_name: '', marks: '', year: '', work_done: '' }]);
+  const [education, setEducation] = useState([{ institute_name: '', type:'' , specialization:'' ,marks: '', year: '', work_done: '' }]);
   const [experience, setExperience] = useState([{ company: '', timePeriod : '', role: '', description: '' }]);
   const [linkedIn,setLinkedIn] = useState('');
   const [portfolio,setPortfolio] = useState('');
+  const [otherLinks,setOtherLinks] = useState('');
+  const [ph , setPh] = useState(false);
   
   const handleEducationChange = (index, field, value) => {
     const newEducation = [...education];
@@ -53,7 +59,7 @@ const OnBoarding = () => {
   };
 
   const addEducation = () => {
-    setEducation([...education, { institute_name: '', marks: '', year: '', work_done: '' }]);
+    setEducation([...education, { institute_name: '',type:'', specialization:'',marks: '', year: '', work_done: '' }]);
   };
 
   const addExperience = () => {
@@ -65,34 +71,54 @@ const OnBoarding = () => {
     navigate('/auth')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if(password !== confirmPassword){
+      alert("Passwords Don't Match")
+    }
+
     const data = {
-      name,
-      email,
-      phone,
-      password,
-      confirmPassword,
-      showPassword,
-      showConfirmPassword,
-      locationName,
-      locationState,
-      locationCountry,
+      name : name,
+      email : email,
+      phone : phone,
+      password : password,
+      location : {
+        name : locationName,
+        state : locationState,
+        locationCountry : locationCountry
+      },
       image,
       resume,
-      bio,
-      gender,
-      ctc,
-      exctc,
-      noticePeriod,
-      quota,
-      domain,
-      education,
-      experience
-    };
-  
+      bio : bio,
+      gender : gender,
+      currentSalary : ctc,
+      expectedSalary : exctc,
+      noticePeriod : noticePeriod,
+      quota : quota,
+      domain : domain,
+      education : education,
+      experience : experience,
+      linkedInProfile :linkedIn,
+      personalWebsite :portfolio,
+      otherLinks : otherLinks,
+      physicallyHandiCapped : ph,
+    };  
     console.log(data);
+    
+
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/applicant/createApplicant`,data,{
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  
+    console.log(res.data);
+    localStorage.setItem("token" ,res.data.token );
+    localStorage.setItem("_id" ,res.data.applicant._id );
+    setAuthenticated(true);
+    setUser(res.data.applicant)
+    navigate('/');
   };
 
   return (
@@ -158,7 +184,7 @@ const OnBoarding = () => {
                     type="text" 
                     value={locationName} 
                     onChange={(e) => setLocationName(e.target.value)} 
-                    placeholder="Enter Your Name" 
+                    placeholder="Enter Location Name" 
                     className="mt-2"
                 />
                 <Input  
@@ -182,6 +208,20 @@ const OnBoarding = () => {
                   </h4>
                   <textarea value={bio} onChange={(e)=>{setBio(e.target.value)}} placeholder="Enter Your Bio" className="text-xs h-20 px-1 py-1 mt-2 w-full rounded-sm shadow-sm ring-1 ring-gray-200"/>
             </div>
+            <div className="px-8 mt-6">
+                <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                  Physically Handicapped
+                </h4>
+                <Select onValueChange={(value)=>{setPh(value === "Yes" ?  true : false)}}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+          </div>
             <div className="px-8 mt-4">
                   <h4 className="scroll-m-20 text-sm font-medium tracking-tight mb-2">
                     Gender
@@ -240,10 +280,10 @@ const OnBoarding = () => {
                     <SelectValue placeholder="Select Quota" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Domain 1</SelectItem>
-                    <SelectItem value="2">Domain 2</SelectItem>
-                    <SelectItem value="3">Domain 3</SelectItem>
-                    <SelectItem value="4">Domain 4</SelectItem>
+                    <SelectItem value="Software">Software</SelectItem>
+                    <SelectItem value="Marketing">Marketing</SelectItem>
+                    <SelectItem value="Management">Management</SelectItem>
+                    <SelectItem value="Consultancy">Consultancy</SelectItem>
                   </SelectContent>
                 </Select>
             </div>
@@ -254,6 +294,8 @@ const OnBoarding = () => {
                   Education {index + 1}
                 </h4>
                 <Input placeholder='Institute Name' value={edu.institute_name} onChange={(e) => handleEducationChange(index, 'institute_name', e.target.value)} className='my-4'/>
+                <Input placeholder='Type' value={edu.type} onChange={(e) => handleEducationChange(index, 'type', e.target.value)} className='my-4' />
+                <Input placeholder='Specialization' value={edu.specialization} onChange={(e) => handleEducationChange(index, 'specialization', e.target.value)} className='my-4' />
                 <Input placeholder='Marks' value={edu.marks} onChange={(e) => handleEducationChange(index, 'marks', e.target.value)} className='my-4' />
                 <Input placeholder='Completion Year' value={edu.year} onChange={(e) => handleEducationChange(index, 'year', e.target.value)} className='my-4' />
                 <textarea placeholder='Work Done' value={edu.work_done} onChange={(e) => handleEducationChange(index, 'work_done', e.target.value)} className='w-full h-48 rounded-md outline outline-gray-200 outline-2 py-2 px-2 mb-2'/>
@@ -277,13 +319,19 @@ const OnBoarding = () => {
                 <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                   LinkedInProfile
                 </h4>
-              <Input  type="text" value={linkedIn} onChange={(e)=>{setLinkedIn(e.target.value)}} placeholder="Enter Your Expected CTC" className="mt-2"/>
+              <Input  type="text" value={linkedIn} onChange={(e)=>{setLinkedIn(e.target.value)}} placeholder="Linkedin Link" className="mt-2"/>
+          </div>
+          <div className="px-8 mt-6">
+                <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                  Portfolio
+                </h4>
+              <Input  type="text" value={portfolio} onChange={(e)=>{setPortfolio(e.target.value)}} placeholder="Portfolio Link" className="mt-2"/>
           </div>
           <div className="px-8 mt-6">
                 <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                   Other Links
                 </h4>
-              <Input  type="text" value={portfolio} onChange={(e)=>{setPortfolio(e.target.value)}} placeholder="Enter Your Expected CTC" className="mt-2"/>
+              <Input  type="text" value={otherLinks} onChange={(e)=>{setOtherLinks(e.target.value)}} placeholder="Other Links(if any)" className="mt-2"/>
           </div>
             <Button className="w-full px-8 mt-2 flex flex-row justify-center" onClick={handleSubmit}>Submit</Button>
           </div>

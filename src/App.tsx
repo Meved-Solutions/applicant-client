@@ -1,7 +1,7 @@
-import { useState} from "react";
+import { useEffect, useState} from "react";
 
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Sidebar from './components/Sidebar';
 import Profile from './pages/Profile';
@@ -9,11 +9,29 @@ import Applications from './pages/Applications';
 import Messages from './pages/Messages';
 import OnBoarding from "./pages/Onboarding";
 import Auth from "./pages/Auth";
+import {useRecoilValue } from "recoil";
+import { Authenticated } from "./atom";
 
 
 const Navigate = () => {
 
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const isAuthenticated = useRecoilValue(Authenticated);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+
+  
+    if (!isAuthenticated) {
+      if (location.pathname === "/") {
+        navigate('/auth');
+      }
+    } else {
+      if (location.pathname === "/") {
+        navigate('/');
+      }
+    }
+  }, [navigate, location, isAuthenticated]);
 
   return(
     <div>

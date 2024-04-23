@@ -1,16 +1,39 @@
+import { Authenticated, User } from "@/atom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
+import axios from "axios";
 import { useState } from "react"
 import { FaEye,FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 
 const Auth = () => {
   
   const navigate = useNavigate();
+  const setAuthenticated = useSetRecoilState(Authenticated);
+  const setUser = useSetRecoilState(User);
 
   const [email,setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = {
+      email,
+      password,
+    }
+
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/applicant/login`,data)
+    
+    console.log(res.data);
+    localStorage.setItem("token" ,res.data.token );
+    localStorage.setItem("_id" ,res.data.eapplicant._id );
+    setAuthenticated(true);
+    setUser(res.data.eapplicant);
+    navigate('/');
+  }
 
   const handleNavigateToOnBoarding = () => {
     navigate('/onboarding');
@@ -31,16 +54,16 @@ const Auth = () => {
               <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                 Email
               </h4>
-              <Input type="text" value={email} onChange={(e)=>{setEmail(e.target.value)}} placeholder="Enter Your Org ID" className="mt-2"/>
+              <Input type="text" value={email} onChange={(e)=>{setEmail(e.target.value)}} placeholder="Enter Your Email" className="mt-2"/>
             </div>
             <div className="px-8 mt-4">
               <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                 Password
               </h4>
-              <Input type={showPassword ? "text" : "password"} value={password}  onChange={(e)=>{setPassword(e.target.value)}}  placeholder="Enter Your Org ID" className="mt-2"/>
+              <Input type={showPassword ? "text" : "password"} value={password}  onChange={(e)=>{setPassword(e.target.value)}}  placeholder="Enter Your Password" className="mt-2"/>
               <div className="flex flex-row justify-end items-center gap-2 my-2 mr-2" onClick={() => showPassword ? setShowPassword(false) : setShowPassword(true) }>{showPassword ?  <FaEyeSlash/> : <FaEye/>} Password</div>            </div>
             <div className="mt-4 flex flex-row justify-center">
-              <Button>
+              <Button onClick={handleSubmit}>
                 Submit
               </Button>
             </div>
