@@ -11,66 +11,48 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button";
+import { useRecoilValue } from "recoil";
+import { User } from "@/atom";
 
 
 const Profile = () => {
 
+  const Cuser = useRecoilValue(User);
+  
+
   const [user,setUser] = useState({
-    "name" : "Dilpreet Grover",
-    "email" : "dilpreetgrover2@gmail.com",
-    "phone" : "+918287645453",
-    "lookingFor" : "Internships",
+    "name" : Cuser.name,
+    "email" : Cuser.email,
+    "phone" : Cuser.phone,
     "location" : {
-      "name" : "New Delhi",
-      "state" : "Delhi",
-      "country" : "India",
+      "name" : Cuser.location.name,
+      "state" : Cuser.location.state,
+      "country" : Cuser.location.country,
     },
-    "bio" : "As a software developer with a fervent passion for learning and staying at the forefront of new technologies, I am dedicated to contributing my skills to both open-source initiatives and real-world projects. My commitment to continuous improvement is not only evident in my technical pursuits but also in my desire to connect with fellow professionals. I thrive on building meaningful relationships within the tech community, fostering collaborations, and sharing knowledge. With a solid foundation in software development and an unwavering enthusiasm for growth, I am poised to tackle challenges and make impactful contributions to the ever-evolving world of technology. Let's connect and embark on this exciting journey together!",
-    "gender" : "Male",
-    "cctc" :  "N/A",
-    "ectc" : "3",
-    "noticePeriod" : "N/A",
-    "quota" : "General",
-    "domain" : "Software",
-    "edu" : [
-      {
-        "institute_name" : "YMCA Faridabad",
-        "type" : "Bachleors",
-        "marks" : "7.81",
-        "year" : "2025",
-        "workDone" : "N/A"
-      }
-    ],
-    "exp" : [
-      {
-        "company" : "GeeksforGeeks",
-        "role" : "Student Coordinator",
-        "timePeriod" : "April 2022 - March 2023",
-        "description" : "Orchestrated and coordinated marketing events, contributing significantly to the success of the college's technical fest, Digi Fiesta. Played a key role in securing sponsorship for the event and successfully invited Sandeep Jain Sir to deliver an insightful tech talk at the university. Established connections with a diverse range of tech enthusiasts and industry experts, enhancing networking opportunities and contributing to the dynamic tech community."
-      },
-      {
-        "company" : "Training & Placement Cell,YMCA",
-        "role" : "Student Coordinator",
-        "timePeriod" : "December-2022 - Present",
-        "description" : "Coordinated and supervised the orchestration of multiple companies' placement drives. Developed an in-house test-taking platform in collaboration with IT team members, offering assistance to peers in their placement preparation based on past drives. Responsible for the design and creation of posters and social media content for placement notifications and updates."
-      },
-      {
-        "company" : "SimplifyNote",
-        "role" : "Full-Stack Developer Intern",
-        "timePeriod" : "July 2023 - September 2023",
-        "description" : "Revamped the product's landing page, providing it with a contemporary aesthetic and an enhanced user interface for a more modern appeal. Spearheaded the incorporation of a speech-to-text feature, significantly improving the product's user-friendliness and robustness. Orchestrated the integration of Stripe & RazorPay using MongoDB & Node.js, into the product's functionality, establishing an optimized payment gateway and initiating a consistent revenue stream."
-      },
-    ],
-    "linkedInProfile" : "https://www.linkedin.com/in/dilpreet-grover-17726b224",
-    "otherLinks" : "https://dilpreetgrover.vercel.app/",
-    "resume"  : "https://res.cloudinary.com/db6fheiii/image/upload/v1711287040/rq99tnhknndftjytf4qx.pdf",
+    "bio" : Cuser.bio,
+    "gender" : Cuser.gender,
+    "cctc" :  Cuser.currentSalary,
+    "ectc" : Cuser.expectedSalary,
+    "noticePeriod" : Cuser.noticePeriod,
+    "quota" : Cuser.quota,
+    "domain" : Cuser.domain,
+    "edu" : Cuser.education,
+    "exp" : Cuser.experience,
+    "linkedInProfile" : Cuser.linkedInProfile,
+    "otherLinks" : Cuser.otherLinks,
+    "resume"  : Cuser.resume,
   })
+
+  
   const [newResume,setNewResume] = useState<File | null>(null);
 
+  // const cloudinaryUrl = import.meta.env.VITE_CLOUDINARY_API_ENV;
+  // const apiKey = cloudinaryUrl.split(':')[1].split('@')[0];
+
   const handleDownload = async () => {
-    const response = await fetch(user.resume);
-    console.log(response);
-    
+    const response = await fetch(user.resume,{
+      method : 'GET',
+    });
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -136,12 +118,6 @@ const Profile = () => {
                         Phone Number
                       </h4>
                       <Input type="text" value={user.phone} onChange={(e) => setUser({ ...user, "phone": e.target.value })} className="mt-2"/>
-                  </div>
-                  <div className="mt-6">
-                      <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
-                        Looking for
-                      </h4>
-                      <Input type="text" value={user.lookingFor} onChange={(e) => setUser({ ...user, "lookingFor": e.target.value })} className="mt-2"/>
                   </div>
                   <div className="mt-6">
                       <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
@@ -307,12 +283,6 @@ const Profile = () => {
             </div>
             <div className="mt-6">
                 <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
-                  Looking for
-                </h4>
-              <Input disabled type="text" value={user.lookingFor} className=" mt-2"/>
-            </div>
-            <div className="mt-6">
-                <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                     Location
                 </h4>
                 <Input
@@ -389,8 +359,8 @@ const Profile = () => {
             <Input disabled type="text" value={education.marks} className="mt-2"/>
             <Input disabled type="text" value={education.year} className="mt-2"/>
             <div className="mt-2 w-[95vh]">
-              {education.workDone.split('\n').map((line, index) => (
-                <p key={index}>{line}</p>
+              {education.work_done.split('.').map((line, index) => (
+                line.trim() !== '' && <li key={index}>{line.trim()}</li>
               ))}
             </div>
           </div>
