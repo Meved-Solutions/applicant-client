@@ -41,33 +41,12 @@ const Profile = () => {
     "linkedInProfile" : Cuser.linkedInProfile,
     "otherLinks" : Cuser.otherLinks,
     "resume"  : Cuser.resume,
+    "image" : Cuser.image
   })
 
   
-  const [newResume,setNewResume] = useState<File | null>(null);
+  const [newResume,setNewResume] = useState("");
 
-  // const cloudinaryUrl = import.meta.env.VITE_CLOUDINARY_API_ENV;
-  // const apiKey = cloudinaryUrl.split(':')[1].split('@')[0];
-
-  const handleDownload = async () => {
-    const response = await fetch(user.resume,{
-      method : 'GET',
-    });
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-  
-    // Extract the file extension from the URL
-    const fileExtension = user.resume.split('.').pop();
-  
-    // Use the file extension when setting the 'download' attribute
-    link.setAttribute('download', `file.${fileExtension}`);
-  
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  };
 
   return (
     <div className="px-10 py-4 w-full " style={{ maxHeight: '100vh', overflowY: 'auto' }}>
@@ -77,18 +56,18 @@ const Profile = () => {
       <div className="flex flex-row mt-6 gap-6">
           <div>
             <div>
-              <img src="https://avatars.githubusercontent.com/u/92905896?v=4" className="w-56 rounded-full"/>
+              <img src={user.image} className="w-56 rounded-full"/>
             </div>
             <div className="flex flex-row mt-6 justify-center gap-4">
                 <a href={user.linkedInProfile}>
                   <FaLinkedin size={25}/>
                 </a>
                 <a href={user.otherLinks}>
-                  <IoIosLink size={25}/>
+                  <IoIosLink size={25}/> 
                 </a>
-                <div onClick={handleDownload}>
+                <a href={user.resume}>
                   <IoMdDownload size={25} />
-                </div>
+                </a>
             </div>
           </div>
           <div className="ml-8 w-[50vh]">

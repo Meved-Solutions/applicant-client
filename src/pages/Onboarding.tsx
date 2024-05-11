@@ -31,7 +31,7 @@ const OnBoarding = () => {
   const [locationState, setLocationState] = useState('');
   const [locationCountry, setLocationCountry] = useState('');
   const [image,setImage] = useState<File | null>(null);
-  const [resume,setResume] = useState<File | null>(null);
+  const [resume,setResume] = useState("");
   const [bio , setBio] = useState('');
   const [gender , setGender] = useState('');
   const [ctc,setCTC] = useState('');  
@@ -89,7 +89,7 @@ const OnBoarding = () => {
         locationCountry : locationCountry
       },
       image,
-      resume,
+      resume : resume,
       bio : bio,
       gender : gender,
       currentSalary : ctc,
@@ -155,12 +155,6 @@ const OnBoarding = () => {
                 Image
               </h4>
               <Input  type="file" onChange={(event)=>{setImage(event.target.files ? event.target.files[0] : null)}} placeholder="Enter Your Org Name" className="mt-2"/>
-          </div>
-          <div className="px-8 mt-6">
-              <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
-                Resume
-              </h4>
-              <Input type="file" onChange={(event)=>{setResume(event.target.files ? event.target.files[0] : null)}} placeholder="Enter Your Org Name" className="mt-2"/>
           </div>
           <div className="px-8 mt-6">
               <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
@@ -320,6 +314,12 @@ const OnBoarding = () => {
                   LinkedInProfile
                 </h4>
               <Input  type="text" value={linkedIn} onChange={(e)=>{setLinkedIn(e.target.value)}} placeholder="Linkedin Link" className="mt-2"/>
+          </div>
+          <div className="px-8 mt-6">
+              <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                Resume
+              </h4>
+              <Input type="text" value={resume} onChange={(e)=>{setResume(e.target.value)}} placeholder="Add your Resume Link" className="mt-2"/>
           </div>
           <div className="px-8 mt-6">
                 <h4 className="scroll-m-20 text-sm font-medium tracking-tight">

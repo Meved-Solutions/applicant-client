@@ -1,261 +1,192 @@
-import { useState } from 'react';
-import { IoIosPeople, IoIosBriefcase, IoIosCash } from 'react-icons/io';
-import { Button } from "@/components/ui/button";
+import { Button } from "./ui/button";
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Input } from './ui/input';
-import InputDropdown from './ui/InputDropdown';
-import { InputFile } from './ui/inputform';
+} from "@/components/ui/drawer" 
+import { Input } from "./ui/input";
+import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import { User } from "@/atom";
+import axios from "axios";
 
+const JobCard = ({ job }) => {
 
+  const user = useRecoilValue(User);
+  const [reason,setReason] = useState("");
+  const [answers, setAnswers] = useState({});
 
-interface JobData {
-  companyName: string;
-  domain: string;
-  roleName: string;
-  companySize: string;
-  experienceNeeded: string;
-  baseStipend: string;
-}
-
-
-
-interface JobCardProps {
-  job: JobData;
-}
-
-const JobApplicationForm = () => {
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [location, setLocation] = useState('');
-    const [yearsOfExperience, setYearsOfExperience] = useState('');
-    const [bio, setBio] = useState('');
-    const [gender, setGender] = useState('Select Gender');
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [experiences, setExperiences] = useState([{ company: '', role: '', description: '' }]);
-    const [education, setEducation] = useState([{ institute_name: '', marks: '', year: '', work_done: '' }]);
-    const [currentCTC, setCurrentCTC] = useState('');
-    const [expectedCTC, setExpectedCTC] = useState('');
-    
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('Email:', email);
-        console.log('Name:', name);
-        console.log('Phone Number:', phoneNumber);
-        console.log('Location:', location);
-        console.log('Years of Experience:', yearsOfExperience);
-        console.log('Bio:', bio);
-        console.log('Gender:', gender);
-        console.log('Selected File:', selectedFile);
-        console.log('Experiences:', experiences);
-        console.log('Education:', education);
-        console.log(`Current CTC: ${currentCTC}, Expected CTC: ${expectedCTC}`);
-        // handle form submission here
-    };
-
-    const handleEmailChange = (e) => setEmail(e.target.value);
-    const handleNameChange = (e) => setName(e.target.value);
-    const handlePhoneNumberChange = (e) => setPhoneNumber(e.target.value);
-    const handleLocationChange = (e) => setLocation(e.target.value);
-    const handleYearsOfExperienceChange = (e) => setYearsOfExperience(e.target.value);
-    const handleBioChange = (e) => setBio(e.target.value);
-    const handleCurrentCTCChange = (e) => {
-      setCurrentCTC(e.target.value);
-    };
-    const handleExpectedCTCChange = (e) => {
-      setExpectedCTC(e.target.value);
-    };
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setSelectedFile(file);
-      };
-      
-    const handleExperienceChange = (index, field, value) => {
-        const newExperiences = [...experiences];
-        newExperiences[index][field] = value;
-        setExperiences(newExperiences);
-      };
-      
-      const addExperience = () => {
-        setExperiences([...experiences, { company: '', role: '', description: '' }]);
-      };
-
-      const handleEducationChange = (index, field, value) => {
-        const newEducation = [...education];
-        newEducation[index][field] = value;
-        setEducation(newEducation);
-      };
-
-      
-        const addEducation = () => {
-            setEducation([...education, { institute_name: '', marks: '', year: '', work_done: '' }]);
-        };
-  
-  
-
-    return (
-        <div className='px-8  overflow-auto custom-scrollbar h-[60vh]'>
-            <div>
-                <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                    Email
-                </h4>
-                <Input placeholder='Enter your email' value={email} onChange={handleEmailChange}/>
-            </div>
-            <div>
-                <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                    Name
-                </h4>
-                <Input placeholder='Enter your name' value={name} onChange={handleNameChange}/>
-            </div>
-            <div>
-                <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                    Phone Number
-                </h4>
-                <Input placeholder='Enter your phone number' value={phoneNumber} onChange={handlePhoneNumberChange}/>
-            </div>
-            <div className="flex flex-row gap-24 items-center">
-                <div> 
-                    <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                        Location
-                    </h4>
-                    <Input placeholder='Enter your location'  className='w-80' value={location} onChange={handleLocationChange}/>
-                </div>
-                <div>
-                    <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                    Years of Experience
-                    </h4>
-                    <Input placeholder='Enter your years of experience' className='w-80' value={yearsOfExperience} onChange={handleYearsOfExperienceChange}/>
-                </div>
-                <div className="w-1/2">
-                    <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                    Gender
-                    </h4>
-                    <InputDropdown 
-                    value={gender} 
-                    options={['Male', 'Female', 'Others']} 
-                    onChange={setGender} 
-                    />
-                </div>
-            </div>
-            <div className='flex flex-row gap-24 items-center'>
-              <div> 
-                <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                  Current CTC
-                </h4>
-                <Input placeholder='Enter your current CTC' className='w-80' value={currentCTC} onChange={handleCurrentCTCChange}/>
-              </div>
-              <div> 
-                <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                  Expected CTC
-                </h4>
-                <Input placeholder='Enter your expected CTC' className='w-80' value={expectedCTC} onChange={handleExpectedCTCChange}/>
-              </div>
-            </div>
-            <div>
-                <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                    Bio
-                </h4>
-                <textarea className='w-full h-48 rounded-md outline outline-gray-200 outline-2' value={bio} onChange={handleBioChange}/>
-            </div>
-                <div className='w-full'>
-                    <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                       Resume
-                    </h4>
-                    <InputFile onChange={(e) => handleFileChange(e)} />
-                </div>
-                {experiences.map((experience, index) => (
-                <div key={index} className='w-full'>
-                    <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                    Experience {index + 1}
-                    </h4>
-                    <Input placeholder='Company' value={experience.company} onChange={(e) => handleExperienceChange(index, 'company', e.target.value)} className='my-4' />
-                    <Input placeholder='Role' value={experience.role} onChange={(e) => handleExperienceChange(index, 'role', e.target.value)} className='my-4' />
-                    <textarea className='w-full h-48 rounded-md outline outline-gray-200 outline-2 py-2 px-2 mb-2' placeholder='Description' value={experience.description} onChange={(e) => handleExperienceChange(index, 'description', e.target.value)} />
-                </div>
-                ))}
-                 <Button onClick={addExperience}>Add Experience</Button>
-                 {education.map((edu, index) => (
-                    <div key={index} className='w-full'>
-                        <h4 className="scroll-m-20 my-2 font-semibold tracking-tight">
-                        Education {index + 1}
-                        </h4>
-                        <Input placeholder='Institute Name' value={edu.institute_name} onChange={(e) => handleEducationChange(index, 'institute_name', e.target.value)} className='my-4'/>
-                        <Input placeholder='Marks' value={edu.marks} onChange={(e) => handleEducationChange(index, 'marks', e.target.value)} className='my-4' />
-                        <Input placeholder='Year' value={edu.year} onChange={(e) => handleEducationChange(index, 'year', e.target.value)} className='my-4' />
-                        <textarea placeholder='Work Done' value={edu.work_done} onChange={(e) => handleEducationChange(index, 'work_done', e.target.value)} className='w-full h-48 rounded-md outline outline-gray-200 outline-2 py-2 px-2 mb-2'/>
-                    </div>
-                    ))}
-                    <Button onClick={addEducation}>Add Education</Button>
-                    <DrawerFooter className='overflow-auto'>
-                    <Button onClick={handleSubmit}>Submit</Button>
-                    </DrawerFooter>
-      </div>
-    );
+  const handleAnswerChange = (id, answer) => {
+    setAnswers(prev => ({ ...prev, [id]: answer }));
   };
   
 
-const JobCard: React.FC<JobCardProps> = ({ job }) => {
+  const handleSubmit = async(e) =>{
+    e.preventDefault();
+    const data = {
+      posting_id : job._id,
+      posting_role : job.title,
+      applicant_id :  user._id,
+      applicant_name : user.name,
+      applicant_email : user.email,
+      org_id : job.org_id,
+      org_name : job.org_name,
+      reason : reason,
+      evaluation : Object.values(answers),
+    }
+
+    const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/application/createApplication`,data,{
+      headers: {
+        'Authorization': localStorage.getItem("token"),
+      },
+      withCredentials: true
+    })
+
+    console.log(res.data);
+    setReason("")
+    setAnswers({});
+  }
+
   return (
-    <div className="bg-gray-200 h-24 rounded-md pl-2 pr-4 pt-1">
-      <div className="flex flex-row justify-between">
-        <h2 className="scroll-m-20 text-xl font-semibold tracking-tight first:mt-0 text-gray-900">
-          {job.companyName}
+    <div className="bg-gray-200 h-28 rounded-md px-2  py-2">
+      <div className="flex flex-col justify-between">
+        <div>
+        <h2 className="pb-2 text-xl font-bold tracking-tight first:mt-0">
+          {job.title}
         </h2>
-        <h3 className="scroll-m-20 font-medium tracking-tight text-gray-600">
-          {job.domain}
-        </h3>
-      </div>
-      <h3 className="scroll-m-20 font-medium tracking-tight text-gray-600">
-        {job.roleName}
-      </h3>
-      <div className="flex flex-row items-center justify-between text-gray-500 pb-2">
-        <div className="flex flex-row items-center gap-3">
-          <div className="flex flex-row items-center gap-1">
-            <IoIosPeople />
-            <h4 className="scroll-m-20 text-sm tracking-tight">
-              Company Size: {job.companySize}
-            </h4>
+        </div>
+        <div className="flex flex-row gap-2 font-semibold text-sm">
+           <div>
+            {job.org_name} |
+           </div>
+           <div>
+            {job.domain}
+           </div>
+        </div>
+        <div className="flex flex-row justify-between font-medium items-center text-sm">
+          <div className="flex flex-row gap-2">
+          <div>
+          {job.skills.slice(0, 3).map((skill, index, array) => (
+            <span key={index}>
+              {skill}
+              {index < array.length - 1 ? ' | ' : ''}
+            </span>
+          ))}
+            </div>
           </div>
-          <div className="flex flex-row items-center gap-1">
-            <IoIosBriefcase /> 
-            <h4 className="scroll-m-20 text-sm tracking-tight">
-              Experience Needed: {job.experienceNeeded}
-            </h4>
-          </div>
-          <div  className="flex flex-row items-center gap-1">
-            <IoIosCash />
-            <h4 className="scroll-m-20 text-sm tracking-tight">
-              Base Stipend: {job.baseStipend}
-            </h4>
+          <div>
+            <Drawer>
+            <DrawerTrigger>
+              <Button>
+                Apply 
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>
+                  <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                    Application
+                  </h3>
+                </DrawerTitle>
+                <DrawerDescription>Complete the Form to Apply</DrawerDescription>
+              </DrawerHeader>
+              <div className="mt-4 px-4 h-[50vh] overflow-auto">
+                <div>
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Org Name
+                  </h4>
+                  <Input disabled type="text" value={job.org_name} className="mt-2"/>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Job Title
+                  </h4>
+                  <Input disabled type="text" value={job.title} className="mt-2"/>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Job Type
+                  </h4>
+                  <Input disabled type="text" value={job.job_type} className="mt-2"/>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Job Domain
+                  </h4>
+                  <Input disabled type="text" value={job.domain} className="mt-2"/>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Job Department
+                  </h4>
+                  <Input disabled type="text" value={job.department} className="mt-2"/>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Job Description
+                  </h4>
+                  <textarea disabled value={job.job_description} className="mt-2 w-full text-xs h-20 px-1 py-1 rounded-sm shadow-sm ring-1 ring-gray-200"/>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Salary Range
+                  </h4>
+                 <div className="flex flex-row items-center gap-4">
+                 <Input disabled type="text" value={job.salaryRange.min} className="mt-2 w-20"/>
+                  <div>
+                    to
+                  </div>
+                 <Input disabled type="text" value={job.salaryRange.max} className="mt-2 w-20"/>
+                 </div>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Notice Period
+                  </h4>
+                  <Input disabled type="text" value={job.notice_period} className="mt-2"/>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Skills
+                  </h4>
+                  <Input disabled type="text" value={job.skills} className="mt-2"/>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Why do you want to join this organization
+                  </h4>
+                  <textarea value={reason} onChange={(e)=>{setReason(e.target.value)}} className="mt-2 w-full text-xs h-20 px-1 py-1 rounded-sm shadow-sm ring-1 ring-gray-200"/>
+                </div>
+                <div className="mt-6">
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
+                    Evaluation
+                  </h4>
+                  {job.evaluation.map(({ question, _id }) => (
+                    typeof question === "string" && (
+                      <div key={_id}>
+                        <h5>{question}</h5>
+                        <textarea
+                          value={answers[_id] || ''}
+                          onChange={e => handleAnswerChange(_id, e.target.value)}
+                          className="mt-2 w-full text-xs h-20 px-1 py-1 rounded-sm shadow-sm ring-1 ring-gray-200"
+                        />
+                      </div>
+                    )
+                  ))}
+                </div>
+              </div>
+              <DrawerFooter>
+                <Button onClick={handleSubmit}>Submit</Button>
+              </DrawerFooter>
+            </DrawerContent>
+          </Drawer>
           </div>
         </div>
-        <Drawer>
-          <DrawerTrigger>
-            <Button size="sm">Apply</Button>
-          </DrawerTrigger>
-          <DrawerContent >
-            <DrawerHeader>
-              <DrawerTitle>
-              <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                Job Application
-              </h3>
-              </DrawerTitle>
-              <DrawerDescription>Please fill out the form below to apply.</DrawerDescription>
-            </DrawerHeader>
-             <div>
-                <JobApplicationForm />
-             </div>
-          </DrawerContent>
-        </Drawer>  
       </div>
     </div>
   );

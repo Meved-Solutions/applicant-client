@@ -1,69 +1,116 @@
-import { useState } from 'react';
-import InputDropdown from '@/components/ui/InputDropdown';
+import { useEffect, useState } from 'react';
 import JobCard from '@/components/JobCard';
-import { IoIosSearch, IoIosBriefcase, IoIosPin } from 'react-icons/io';
+import axios from 'axios';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+
 
 const Home = () => {
-  const [domain, setDomain] = useState('Select Your Domain');
-  const [jobTitle, setJobTitle] = useState('Enter Your Job Title');
-  const [jobLocation, setJobLocation] = useState('Enter Job Location');
 
-  const domains = ['Domain 1', 'Domain 2', 'Domain 3'];
-  const jobTitles = ['Job Title 1', 'Job Title 2', 'Job Title 3'];
-  const jobLocations = ['Location 1', 'Location 2', 'Location 3'];
+  const [jobData,setJobData] = useState([]);
+  const [domain, setDomain] = useState("")
+  const [jobType, setJobType] = useState("");
 
+  useEffect(()=>{
+    const fectchPostings = async () =>{
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/posting/getPostings`,{
+        headers: {
+          'Authorization': localStorage.getItem("token"),
+        },
+        withCredentials: true
+      });
+      console.log(res.data);
+      setJobData(res.data)
+    }
 
-  const jobData = [
-    {
-      companyName: 'Company 1',
-      domain: 'Domain 1',
-      roleName: 'Role 1',
-      companySize: '100-200',
-      experienceNeeded: '2-3 years',
-      baseStipend: '$3000',
-    },
-    {
-      companyName: 'Company 2',
-      domain: 'Domain 2',
-      roleName: 'Role 2',
-      companySize: '200-300',
-      experienceNeeded: '3-4 years',
-      baseStipend: '$4000',
-    },
-    {
-      companyName: 'Company 3',
-      domain: 'Domain 3',
-      roleName: 'Role 3',
-      companySize: '300-400',
-      experienceNeeded: '4-5 years',
-      baseStipend: '$5000',
-    },
-    {
-      companyName: 'Company 4',
-      domain: 'Domain 4',
-      roleName: 'Role 4',
-      companySize: '400-500',
-      experienceNeeded: '5-6 years',
-      baseStipend: '$6000',
-    },
-    // Add more job data here
-  ];
+    fectchPostings();
+  },[]);
+
+  const filteredPostings = jobData.filter(posting => 
+    (jobType === "" ? posting : posting.job_type === jobType) &&
+    (domain === "" ? posting : posting.domain === domain) 
+  );
 
   return (
-    <div className="px-8 py-4">
-      <h1 className="scroll-m-20 text-3xl font-bold tracking-tight">
-        Home
-      </h1>
-      <div className="flex flex-row justify-between items-center px-10 bg-gray-200 w-[1280px] h-16 rounded-md mx-2 my-6 text-semibold">
-        <IoIosSearch className="my-5 mr-4" size={28} opacity={0.5}/>
-        <InputDropdown value={domain} options={domains} onChange={setDomain} />
-        <IoIosBriefcase className="my-5 mx-4" size={28} opacity={0.5}/>
-        <InputDropdown value={jobTitle} options={jobTitles} onChange={setJobTitle} />
-        <IoIosPin className="my-5 mx-4" size={30} opacity={0.5} />
-        <InputDropdown value={jobLocation} options={jobLocations} onChange={setJobLocation} />
+    <div className="px-8 py-4 overflow-auto min-h-screen custom-scrollbar w-screen">
+      <div className='flex flex-row justify-between'>
+        <div>
+          <h1 className="scroll-m-20 text-3xl font-bold tracking-tight">
+            Home
+          </h1>
+        </div>
+        <div>
+        <Dialog>
+          <DialogTrigger>
+            <Button>
+              Filter Postings
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+              <h2 className="scroll-m-20  pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+                Filter Postings
+              </h2> 
+              </DialogTitle>
+              <DialogDescription>
+                <div className='h-[50vh] overflow-auto'>
+                  <div>
+                  <h4 className="scroll-m-20 text-sm font-medium tracking-tight mb-2">
+                    Domain
+                  </h4>
+                    <Select onValueChange={(value)=>{setDomain(value)}}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Quota" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Software">Software</SelectItem>
+                      <SelectItem value="Marketing">Marketing</SelectItem>
+                      <SelectItem value="Management">Management</SelectItem>
+                      <SelectItem value="Consultancy">Consultancy</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  </div>
+                  <div className='mt-6'>
+                    <h4 className="scroll-m-20 text-sm font-medium tracking-tight mb-2">
+                      Job Type
+                    </h4>
+                    <Select onValueChange={(value)=>{setJobType(value)}}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Job type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Full-Time">Full-Time</SelectItem>
+                            <SelectItem value="Part-Time">Part-Time</SelectItem>
+                            <SelectItem value="Internship">Internship</SelectItem>
+                            <SelectItem value="Contractual">Contractual</SelectItem>
+                          </SelectContent>
+                        </Select>
+                  </div>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+        </div>
       </div>
-      <div className="flex flex-col gap-4 overflow-auto max-h-[500px] custom-scrollbar">
-        {jobData.map((job, index) => (
+      <div className="flex flex-col gap-4 mt-6 w-full ">
+        {filteredPostings.map((job, index) => (
           <JobCard key={index} job={job} />
         ))}
       </div>

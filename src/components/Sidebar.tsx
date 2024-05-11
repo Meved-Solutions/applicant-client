@@ -13,7 +13,6 @@ const Sidebar = () => {
   const navItems = [
     { name: 'Home', icon: IoHomeOutline, path: '/' },
     { name: 'Applications', icon: IoAppsOutline, path: '/applications' },
-    { name: 'Messages', icon: IoMailOutline, path: '/messages' },
     { name: 'Profile', icon: IoPersonOutline, path: '/profile' },
     { name: 'Logout', icon: IoLogOutOutline , path: '/logout' },
   ];
