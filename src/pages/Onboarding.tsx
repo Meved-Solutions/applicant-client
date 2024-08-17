@@ -14,6 +14,22 @@ import axios from "axios"
 import { useSetRecoilState } from "recoil";
 import { Authenticated, User } from "@/atom";
 
+interface Education {
+  institute_name: string;
+  type: string;
+  specialization: string;
+  marks: string;
+  year: string;
+  work_done: string;
+}
+
+interface Experience {
+  company: string;
+  timePeriod: string;
+  role: string;
+  description: string;
+}
+
 const OnBoarding = () => {
 
   const navigate = useNavigate();
@@ -46,13 +62,13 @@ const OnBoarding = () => {
   const [otherLinks,setOtherLinks] = useState('');
   const [ph , setPh] = useState(false);
   
-  const handleEducationChange = (index, field, value) => {
+  const handleEducationChange = (index: number, field: keyof Education, value: string) => {
     const newEducation = [...education];
     newEducation[index][field] = value;
     setEducation(newEducation);
   };
 
-  const handleExperienceChange = (index, field, value) => {
+  const handleExperienceChange = (index: number, field: keyof Experience, value: string) => {
     const newExperience = [...experience];
     newExperience[index][field] = value;
     setExperience(newExperience);
@@ -71,7 +87,7 @@ const OnBoarding = () => {
     navigate('/auth')
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if(password !== confirmPassword){

@@ -1,4 +1,4 @@
-import { IoHomeOutline, IoLogOutOutline , IoPersonOutline, IoAppsOutline, IoMailOutline } from 'react-icons/io5';
+import { IoHomeOutline, IoLogOutOutline , IoPersonOutline, IoAppsOutline } from 'react-icons/io5';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { Authenticated } from '@/atom';

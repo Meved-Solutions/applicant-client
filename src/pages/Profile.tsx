@@ -14,13 +14,55 @@ import { Button } from "@/components/ui/button";
 import { useRecoilValue } from "recoil";
 import { User } from "@/atom";
 
+interface Location {
+  name: string;
+  state: string;
+  country: string;
+}
+
+interface Education {
+  institute_name: string;
+  type: string;
+  marks: string;
+  year: string;
+  work_done: string;
+}
+
+interface Experience {
+  company: string;
+  role: string;
+  timePeriod: string;
+  description: string;
+}
+
+interface UserType {
+  name: string;
+  email: string;
+  phone: string;
+  location: Location;
+  bio: string;
+  gender: string;
+  currentSalary: string;
+  expectedSalary: string;
+  noticePeriod: string;
+  quota: string;
+  domain: string;
+  education: Education[];
+  experience: Experience[];
+  linkedInProfile: string;
+  otherLinks: string;
+  resume: string;
+  image: string;
+}
+
 
 const Profile = () => {
 
-  const Cuser = useRecoilValue(User);
+  //@ts-ignore
+  const Cuser = useRecoilValue<UserType>(User);
   
 
-  const [user,setUser] = useState({
+  const [user,setUser] = useState<UserType>({
     "name" : Cuser.name,
     "email" : Cuser.email,
     "phone" : Cuser.phone,
@@ -31,20 +73,20 @@ const Profile = () => {
     },
     "bio" : Cuser.bio,
     "gender" : Cuser.gender,
-    "cctc" :  Cuser.currentSalary,
-    "ectc" : Cuser.expectedSalary,
+    "currentSalary" :  Cuser.currentSalary,
+    "expectedSalary" : Cuser.expectedSalary,
     "noticePeriod" : Cuser.noticePeriod,
     "quota" : Cuser.quota,
     "domain" : Cuser.domain,
-    "edu" : Cuser.education,
-    "exp" : Cuser.experience,
+    "education" : Cuser.education,
+    "experience" : Cuser.experience,
     "linkedInProfile" : Cuser.linkedInProfile,
     "otherLinks" : Cuser.otherLinks,
     "resume"  : Cuser.resume,
     "image" : Cuser.image
   })
 
-  
+  //@ts-ignore
   const [newResume,setNewResume] = useState("");
 
 
@@ -62,9 +104,7 @@ const Profile = () => {
                 <a href={user.linkedInProfile}>
                   <FaLinkedin size={25}/>
                 </a>
-                <a href={user.otherLinks}>
-                  <IoIosLink size={25}/> 
-                </a>
+                <a href={user.otherLinks}><IoIosLink size={25}/> </a>
                 <a href={user.resume}>
                   <IoMdDownload size={25} />
                 </a>
@@ -98,14 +138,14 @@ const Profile = () => {
                       </h4>
                       <Input type="text" value={user.phone} onChange={(e) => setUser({ ...user, "phone": e.target.value })} className="mt-2"/>
                   </div>
-                  <div className="mt-6">
+                  {/* <div className="mt-6">
                       <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                           Location
                       </h4>
                       <Input type="text" value={user.location.name} onChange={(e) => setUser({ ...user, "location": { ...user.location , "name" :  e.target.value } })} className="mt-2"/>
                       <Input type="text" value={user.location.state} onChange={(e) => setUser({ ...user, "location": { ...user.location , "state" :  e.target.value } })} className="mt-2"/>
                       <Input type="text" value={user.location.country} onChange={(e) => setUser({ ...user, "location": { ...user.location , "country" :  e.target.value } })} className="mt-2"/>
-                  </div>
+                  </div> */}
                   <div className="mt-6">
                       <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                         Gender
@@ -122,13 +162,13 @@ const Profile = () => {
                         <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                           Current CTC (in LPA)
                         </h4>
-                        <Input type="text" value={user.cctc} onChange={(e) => setUser({ ...user, "cctc": e.target.value })} className="mt-2"/>
+                        <Input type="text" value={user.currentSalary} onChange={(e) => setUser({ ...user, "currentSalary": e.target.value })} className="mt-2"/>
                   </div> 
                   <div className="mt-6">
                         <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                           Expected CTC (in LPA)
                         </h4>
-                        <Input type="text" value={user.ectc} onChange={(e) => setUser({ ...user, "ectc": e.target.value })} className="mt-2"/>
+                        <Input type="text" value={user.expectedSalary} onChange={(e) => setUser({ ...user, "expectedSalary": e.target.value })} className="mt-2"/>
                   </div>  
                   <div className="mt-6">
                         <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
@@ -152,33 +192,33 @@ const Profile = () => {
               <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                 Education
               </h4>
-              {user.edu.map((education, index) => (
+              {user.education.map((education, index) => (
                 <div key={index}>
                   <Input type="text" value={education.institute_name} onChange={(e) => {
-                    const newEducation = [...user.edu];
+                    const newEducation = [...user.education];
                     newEducation[index] = { ...newEducation[index], institute_name: e.target.value };
-                    setUser({ ...user, edu: newEducation });
+                    setUser({ ...user, education: newEducation });
                   }} className="mt-2"/>
                  <Input type="text" value={education.type} onChange={(e) => {
-                    const newEducation = [...user.edu];
+                    const newEducation = [...user.education];
                     newEducation[index] = { ...newEducation[index], type: e.target.value };
-                    setUser({ ...user, edu: newEducation });
+                    setUser({ ...user, education: newEducation });
                   }} className="mt-2"/>
                    <Input type="text" value={education.marks} onChange={(e) => {
-                    const newEducation = [...user.edu];
+                    const newEducation = [...user.education];
                     newEducation[index] = { ...newEducation[index], marks: e.target.value };
-                    setUser({ ...user, edu: newEducation });
+                    setUser({ ...user, education: newEducation });
                   }} className="mt-2"/>
                   <Input type="text" value={education.year} onChange={(e) => {
-                    const newEducation = [...user.edu];
+                    const newEducation = [...user.education];
                     newEducation[index] = { ...newEducation[index], year: e.target.value };
-                    setUser({ ...user, edu: newEducation });
+                    setUser({ ...user, education: newEducation });
                   }} className="mt-2"/>
                   <div className="mt-2 w-[95vh]">
-                  <textarea  value={education.workDone}  onChange={(e) => {
-                    const newEducation = [...user.edu];
-                    newEducation[index] = { ...newEducation[index], workDone: e.target.value };
-                    setUser({ ...user, edu: newEducation });
+                  <textarea  value={education.work_done}  onChange={(e) => {
+                    const newEducation = [...user.education];
+                    newEducation[index] = { ...newEducation[index], work_done: e.target.value };
+                    setUser({ ...user, education: newEducation });
                   }} className="text-xs h-20 px-1 py-1 mt-2 w-full rounded-sm shadow-sm ring-1 ring-gray-200"/>
                   </div>
                 </div>
@@ -188,28 +228,28 @@ const Profile = () => {
                   <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                     Experience
                   </h4>
-                  {user.exp.map((experience, index) => (
+                  {user.experience.map((experience, index) => (
                     <div key={index}>
                       <Input type="text" value={experience.company} onChange={(e) => {
-                        const newExp = [...user.exp];
+                        const newExp = [...user.experience];
                         newExp[index] = { ...newExp[index], company: e.target.value };
-                        setUser({ ...user, exp: newExp });
+                        setUser({ ...user, experience: newExp });
                       }} className="mt-2"/>
                       <Input type="text" value={experience.role} onChange={(e) => {
-                        const newExp = [...user.exp];
+                        const newExp = [...user.experience];
                         newExp[index] = { ...newExp[index], role: e.target.value };
-                        setUser({ ...user, exp: newExp });
+                        setUser({ ...user, experience: newExp });
                       }} className="mt-2"/>
                       <Input type="text" value={experience.timePeriod} onChange={(e) => {
-                        const newExp = [...user.exp];
+                        const newExp = [...user.experience];
                         newExp[index] = { ...newExp[index], timePeriod: e.target.value };
-                        setUser({ ...user, exp: newExp });
+                        setUser({ ...user, experience: newExp });
                       }} className="mt-2"/>
                        <div className="mt-2 w-[95vh]">
                       <textarea  value={experience.description}  onChange={(e) => {
-                        const newExp = [...user.exp];
+                        const newExp = [...user.experience];
                         newExp[index] = { ...newExp[index], description: e.target.value };
-                        setUser({ ...user, edu: newExp });
+                        setUser({ ...user, experience: newExp });
                       }} className="text-xs h-20 px-1 py-1 mt-2 w-full rounded-sm shadow-sm ring-1 ring-gray-200"/>
                       </div>
                     </div>
@@ -231,7 +271,7 @@ const Profile = () => {
                       <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                         Resume
                       </h4>
-                      <Input type="file"  onChange={(e) => setNewResume(e.target.files ? e.target.files[0] : null)} className="mt-2"/>
+                      <Input type="text" value={newResume} onChange={(e) => setNewResume(e.target.value)} className="mt-2"/>
                 </div>
                 <div className="px-8 mt-6">
                   <Button>
@@ -301,13 +341,13 @@ const Profile = () => {
                   <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                     Current CTC (in LPA)
                   </h4>
-                <Input disabled type="text" value={user.cctc}  className="mt-2"/>
+                <Input disabled type="text" value={user.currentSalary}  className="mt-2"/>
             </div> 
             <div className="mt-6">
                   <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
                     Expected CTC (in LPA)
                   </h4>
-                <Input disabled type="text" value={user.ectc}  className="mt-2"/>
+                <Input disabled type="text" value={user.expectedSalary}  className="mt-2"/>
             </div>  
             <div className="mt-6">
                   <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
@@ -331,7 +371,7 @@ const Profile = () => {
         <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
           Education
         </h4>
-        {user.edu.map((education, index) => (
+        {user.education.map((education, index) => (
           <div key={index}>
             <Input disabled type="text" value={education.institute_name} className="mt-2"/>
             <Input disabled type="text" value={education.type} className="mt-2"/>
@@ -349,7 +389,7 @@ const Profile = () => {
         <h4 className="scroll-m-20 text-sm font-medium tracking-tight">
           Experience
         </h4>
-        {user.exp.map((experience, index) => (
+        {user.experience.map((experience, index) => (
           <div key={index}>
             <Input disabled type="text" value={experience.company} className="mt-2"/>
             <Input disabled type="text" value={experience.role} className="mt-2"/>

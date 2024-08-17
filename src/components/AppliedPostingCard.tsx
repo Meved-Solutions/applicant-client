@@ -1,3 +1,4 @@
+//@ts-ignore
 const AppliedPostingCard = ({posting}) => {
   return (
     <div className="bg-gray-200 w-64 h-24 rounded-md shadow-md px-2 py-2 flex flex-col justify-center gap-1">
